@@ -9,7 +9,7 @@ class GraphState(TypedDict):
 def try_task(state : GraphState) -> GraphState:
     state["attempt"] += 1
     print(f"Attempt {state['attempt']}...")
-    if state["attempt"] >= 3:
+    if state["attempt"] >= 4:
         state["success"] = True
     return state
 
