@@ -10,7 +10,8 @@ import faiss
 import numpy as np 
 from langgraph.graph.message import add_messages
 from langchain_core.tools import tool
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage , ToolMessage
+from langgraph.checkpoint.memory import MemorySaver
 
 load_dotenv()
 
@@ -93,7 +94,6 @@ def call_tool(state: GraphState) -> GraphState:
     tool_call = last_message.tool_calls[0]
     tool_fn = tool_map[tool_call["name"]]
     result = tool_fn.invoke(tool_call["args"])
-    from langchain_core.messages import ToolMessage
     tool_message = ToolMessage(content=result, tool_call_id=tool_call["id"])
     return {"messages": [tool_message]}
 
@@ -113,14 +113,23 @@ builder.add_conditional_edges(
 )
 builder.add_edge("call_tool", "call_model")  
 
-graph = builder.compile()
+checkpointer = MemorySaver()
+graph = builder.compile(checkpointer=checkpointer)
+
+config = {'configurable' : {'thread_id' : 'thread_1'}}
 
 # Test 1
-response1 = graph.invoke({"messages" : [HumanMessage(content="What is subnetting used for?")]})
+response1 = graph.invoke(
+    {"messages": [HumanMessage(content="What is subnetting used for?")]},
+    config=config
+)
 print("\n--- Answer 1 ---")
 print(response1["messages"][-1].content)
 
-# Test 2
-response2 = graph.invoke({"messages" : [HumanMessage(content="what is 15+27?")]})
+# Turn 2 - this should remember Turn 1's context
+response2 = graph.invoke(
+    {"messages": [HumanMessage(content="Can you give me a shorter summary of that?")]},
+    config=config
+)
 print("\n--- Answer 2 ---")
 print(response2["messages"][-1].content)
