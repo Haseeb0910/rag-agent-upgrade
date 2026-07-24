@@ -4,7 +4,7 @@ An agentic upgrade to a traditional RAG chatbot — built with **LangGraph**, **
 
 ## Why this exists
 
-The original version of this chatbot ([https://github.com/Haseeb0910/Rag-Based-ChatBot]) used a standard RAG pipeline: every question triggered a document search, regardless of whether the question actually needed one. This upgrade rebuilds that system as a **graph of decisions** instead of a fixed chain — the LLM itself chooses the right tool for each question, remembers conversation context across turns, and its reasoning can be traced step-by-step.
+The original version of this chatbot (https://github.com/Haseeb0910/Rag-Based-ChatBot) used a standard RAG pipeline: every question triggered a document search, regardless of whether the question actually needed one. This upgrade rebuilds that system as a **graph of decisions** instead of a fixed chain — the LLM itself chooses the right tool for each question, remembers conversation context across turns, and its reasoning can be traced step-by-step.
 
 ## What it does
 
@@ -51,7 +51,7 @@ The graph has two nodes — `call_model` (the LLM, bound to available tools) and
 
 ## What changed from v1
 
-The [original RAG chatbot](#) used a single function that always ran retrieval before every LLM call, and rebuilt the FAISS index from scratch on every question. This version:
+The [original RAG chatbot](https://github.com/Haseeb0910/Rag-Based-ChatBot) used a single function that always ran retrieval before every LLM call, and rebuilt the FAISS index from scratch on every question. This version:
 
 - Builds the index **once** per uploaded document, not per question
 - Lets the LLM **decide** whether retrieval is even necessary
